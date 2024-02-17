@@ -16,6 +16,11 @@ public func printLines(path: String) throws {
     print(lines.count - 1)
 }
 
+public func printWords(path: String) throws {
+    let contents = try String(contentsOfFile: path).components(separatedBy: .whitespacesAndNewlines).filter { !$0.isEmpty }
+    print("Words: \(contents.count)")
+}
+
 @main
 struct Tool: ParsableCommand {
     @Argument(help: "paste the path to the file you want to parse")
@@ -23,6 +28,9 @@ struct Tool: ParsableCommand {
     
     @Flag(name: .short)
     var line = false
+    
+    @Flag(name: .short)
+    var word = false
     
     public func run() throws {
         
@@ -33,7 +41,15 @@ struct Tool: ParsableCommand {
             catch {
                 print("Could not count lines")
             }
-        } else {
+        } else if word {
+            do {
+                try(printWords(path: self.path))
+            }
+            catch {
+                print("Could not count lines")
+            }
+        } else
+        {
             
             do {
                 try printBytes(path: self.path)

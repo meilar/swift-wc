@@ -10,6 +10,11 @@ public func printBytes(path: String) throws {
     }
 }
 
+public func printChars(path: String) throws {
+    let contents = try String(contentsOfFile: path)
+    print(contents.utf16.count + 1)
+}
+
 public func printLines(path: String) throws {
     let contents = try String(contentsOfFile: path)
     let lines = contents.components(separatedBy: "\n")
@@ -30,13 +35,25 @@ struct Tool: ParsableCommand {
     var line = false
     
     @Flag(name: .short)
+    var count = false
+    
+    @Flag(name: .short)
     var word = false
     
+    @Flag(name: .short)
+    var meta = false
+    
     public func run() throws {
-        
         if line {
             do {
                 try(printLines(path: self.path))
+            }
+            catch {
+                print("Could not count lines")
+            }
+        } else if meta {
+            do {
+                try(printChars(path: self.path))
             }
             catch {
                 print("Could not count lines")
@@ -48,16 +65,16 @@ struct Tool: ParsableCommand {
             catch {
                 print("Could not count lines")
             }
-        } else
-        {
-            
+        } else if count {
             do {
                 try printBytes(path: self.path)
             }
             catch  {
                 print("No text file found at that location")
             }
-            
+        }
+        
+        else { print("holding")
         }
     }
 }
